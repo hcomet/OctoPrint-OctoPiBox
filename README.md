@@ -9,6 +9,12 @@ allows for remote power-on/off as well as automatic timed power-off of your prin
 Plugin ideas were based on ideas and code found in the [AutomaticShutdown](http://plugins.octoprint.org/plugins/automaticshutdown/)
 and [DisplayZ](http://plugins.octoprint.org/plugins/displayz/) plugins.
 
+The front of the OctoPiBox showing the basic printer outlet, spare outlet mode switches and the status "OctoPrint" logo.
+![Image of OctoPiBox front](https://github.com/hcomet/OctoPrint-OctoPiBox/blob/master/OctoPiBox-front.png)
+
+The back of the OctoPiBox showing the the power outlets for the printer, a spare outlet and Raspberry Pi network and USB connections.
+![Image of OctoPiBox front](https://github.com/hcomet/OctoPrint-OctoPiBox/blob/master/OctoPiBox-back.png)
+
 ## Setup
 
 Install via the bundled [Plugin Manager](https://github.com/foosel/OctoPrint/wiki/Plugin:-Plugin-Manager)
