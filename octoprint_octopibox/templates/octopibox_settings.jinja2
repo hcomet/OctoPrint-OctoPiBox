@@ -1,0 +1,113 @@
+<h3>{{ _('OctoPiBox Configuration') }}</h3>
+<p>Use this to automatically manage the two power outlets on the OctoPiBox. If enabled the power outlets will be automatically powered off after a print has completed succesfully. The time from print complete to power-off is configured using the power-off delay.</p>
+<form class="form-horizontal">
+
+	<div class="control-group">
+		<div class="controls" title="{{ _('Check to enable automatic printer-off.') }}">
+			<label class="checkbox">
+				<input type="checkbox" data-bind="checked: settings.plugins.octopibox.enabled" /> {{ _('Check to enable automatic power-off to your OctoPiBox connected printer.') }}
+			</label>
+		</div>
+	</div>
+<!--  TODO -->
+	<!-- <div class="control-group">
+		<div class="controls" title="{{ _('Check to enable automatic connections.') }}">
+			<label class="checkbox">
+				<input type="checkbox" data-bind="checked: settings.plugins.octopibox.auto_connect_enabled" /> {{ _('Check to automatically connect/disconnect with printer power-on/off.') }}
+			</label>
+		</div>
+	</div> -->
+
+	<div class="control-group" title="{{ _('Delay in seconds range 60 to 1800 (default 600).') }}">
+		<label class="control-label">{{ _('Power-off delay') }}</label>
+		<div class="controls">
+			<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.timer_seconds">
+		</div>
+	</div>
+
+	<h4>Power Pins</h4>
+	<p>Set the Raspberry Pi GPIO pins that will be used to control the two OctoPiBox power outlets. BCM pin numbering is used.</p>
+	<div class="row">
+		<div class="control-group span5" title="{{ _('Printer power pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Printer pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.printer_pin">
+			</div>
+		</div>
+
+		<div class="control-group span5" title="{{ _('Spare power pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Spare pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.spare_pin">
+			</div>
+		</div>
+	</div>
+	<h4>Button Pins</h4>
+	<p>Set the Raspberry Pi GPIO pins that will be used to control the two OctoPiBox power buttons.
+		BCM pin numbering is used. Setting a button's enable pin to a value other than 0 will enable a printing interlock.
+		The printing interlock will disable the power button to during printing to prevent accidental power-offs.
+		The default is to enable printing interlock for the printer power button but not the spare power button.</p>
+	<div class="row">
+		<div class="control-group span5" title="{{ _('Button debounce in milliseconds.') }}">
+			<label class="control-label">{{ _('Button debounce (ms)') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.button_debounce">
+			</div>
+		</div>
+	</div>
+	<h5>Printer Power Button</h5>
+	<div class="row">
+		<div class="control-group span5" title="{{ _('Printer power button pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Button pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.printer_button_pin">
+			</div>
+		</div>
+
+		<div class="control-group span5" title="{{ _('Button enable pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Button Enable pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.printer_button_enable_pin">
+			</div>
+		</div>
+	</div>
+	<h5>Spare Power Button</h5>
+	<div class="row">
+		<div class="control-group span5" title="{{ _('Spare power button pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Button pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.spare_button_pin">
+			</div>
+		</div>
+
+		<div class="control-group span5" title="{{ _('Spare power button enable pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Button Enable pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.spare_button_enable_pin">
+			</div>
+		</div>
+	</div>
+
+	<h4>OctoPrint Status Light</h4>
+	<p>Set the Raspberry Pi GPIO pins to use for the RGB LED used to indicate the current status of OctoPrint.</p>
+	<div class="row">
+		<div class="control-group span4" title="{{ _('Spare power button enable pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Red pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.status_red_pin">
+			</div>
+		</div>
+		<div class="control-group span4" title="{{ _('Spare power button enable pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Green pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.status_green_pin">
+			</div>
+		</div>
+		<div class="control-group span4" title="{{ _('Spare power button enable pin on the RaspberryPi. BCM number.') }}">
+			<label class="control-label">{{ _('Blue pin') }}</label>
+			<div class="controls">
+				<input type="text" class="input-block-level" data-bind="value: settings.plugins.octopibox.status_blue_pin">
+			</div>
+		</div>
+	</div>
+</form>
