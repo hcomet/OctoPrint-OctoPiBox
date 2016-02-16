@@ -8,7 +8,7 @@ author: S W Hillier
 license: AGPLv3
 
 # TODO
-date: today's date in format YYYY-MM-DD, e.g. 2015-04-21
+date: 2016-02-16
 
 homepage: https://github.com/hcomet/OctoPrint-Octopibox
 source: https://github.com/hcomet/OctoPrint-Octopibox
@@ -42,13 +42,11 @@ featuredimage: url of a featured image for your plugin
 compatibility:
   # list of compatible versions, for example 1.2.0. If left empty no specific version requirement will be assumed
   octoprint:
-  - 1.2.0
+  - 1.2.7
 
   # list of compatible operating systems, valid values are linux, windows, macos, leaving empty defaults to all
   os:
-  - linux
-  - windows
-  - macos
+  - Raspbian
 ---
 
 **TODO**: Longer description of your plugin, configuration examples etc. This part will be visible on the page at

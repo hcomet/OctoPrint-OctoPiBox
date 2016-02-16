@@ -205,8 +205,7 @@ class OctoPiBoxPlugin(octoprint.plugin.TemplatePlugin,
 			]
 
 	def get_api_commands(self):
-		return dict(enable=[],
-			disable=[],
+		return dict(autopoweroff=[],
 			abort=[])
 
 	def on_api_command(self, command, data):
@@ -216,27 +215,24 @@ class OctoPiBoxPlugin(octoprint.plugin.TemplatePlugin,
 			self._timer = None
 			self._set_status_LED("CONNECTED")
 			self._logger.info("Automatic Power-Off aborted.")
+		elif command == "autopoweroff":
+			self._logger.debug("Automatic Printer Power-off called via API. Starting timer.")
+			self._start_auto_power_off_timer()
 
 	def on_event(self, event, payload):
 		#self._logger.info("Event triggered: {}".format(event))
 		if event == Events.PRINT_DONE:
 			self._octopibox.pin_on(self._printer_button_enable_pin)
 			if not self._enabled:
-				self._logger.info("Print complete. Automatic Printer Power-off is currently DISABLED.")
+				self._logger.debug("Print complete. Automatic Printer Power-off is currently DISABLED.")
 				self._set_status_LED("CONNECTED")
 				return
 			if self._timer is not None:
 				return
 
-			self._timeout_value = self._settings.get_int(['timer_seconds'])
-			if (self._timeout_value < 30) | (self._timeout_value > 1800):
-				self._timeout_value = 600
+			self._logger.debug("Print complete. Automatic Printer Power-off is ENABLED. Starting timer.")
+			self._start_auto_power_off_timer()
 
-			self._logger.info("Print complete. Automatic Printer Power-off is ENABLED. Starting timer.")
-			self._set_status_LED("POWERINGOFF")
-			self._timer = RepeatedTimer(1, self._timer_task)
-			self._timer.start()
-			self._plugin_manager.send_plugin_message(self._identifier, dict(type="timeout", timeout_value=self._timeout_value))
 		elif event == Events.CONNECTED:
 			self._set_status_LED("CONNECTED")
 		elif event == Events.DISCONNECTED:
@@ -252,6 +248,17 @@ class OctoPiBoxPlugin(octoprint.plugin.TemplatePlugin,
 			self._set_status_LED("ERROR")
 		elif event == Events.CLIENT_OPENED:
 			self._update_power_status()
+
+	def _start_auto_power_off_timer(self):
+		self._timeout_value = self._settings.get_int(['timer_seconds'])
+		if (self._timeout_value < 30) | (self._timeout_value > 1800):
+			self._timeout_value = 600
+
+		self._logger.debug("Automatic Printer Power-off started: {} seconds.".format(self._timeout_value))
+		self._set_status_LED("POWERINGOFF")
+		self._timer = RepeatedTimer(1, self._timer_task)
+		self._timer.start()
+		self._plugin_manager.send_plugin_message(self._identifier, dict(type="timeout", timeout_value=self._timeout_value))
 
 	def _load_settings(self):
 		self._enabled = self._settings.get_boolean(['enabled'])
@@ -277,34 +284,34 @@ class OctoPiBoxPlugin(octoprint.plugin.TemplatePlugin,
 	def _powercallbackfunction(self, pin, level, tick):
 
 		if pin == self._printer_pin:
-			#self._logger.info("Printer pin {} level changed to {}".format(pin, level))
+			self_logger.debug("Printer pin {} level changed to {}".format(pin, level))
 			self._update_power_status()
 			if level == 0:
 				current_connection = self._printer.get_current_connection()
 				if current_connection[0] != "Closed":
-					#self._logger.info("Printer connection found: {}".format(current_connection[0:3]))
+					self_logger.debug("Printer connection found: {}".format(current_connection[0:3]))
 					self._printer.disconnect()
-					#self._logger.info("Printer disconnected after power-off.")
+					self_logger.debug("Printer disconnected after power-off.")
 			elif level == 1:
-				#self._logger.info("Printer power-on detected.")
+				self_logger.debug("Printer power-on detected.")
 				self._set_status_LED("CONNECTING")
 				self._printer.connect()
-				#self._logger.info("Printer auto-connect after power-on attempted.")
+				self_logger.debug("Printer auto-connect after power-on attempted.")
 
 	def _printeroff(self):
-		self._logger.info("Printer disconnect before power-off.")
+		self._logger.debug("Printer disconnect before power-off.")
 		self._printer.disconnect()
 		self._logger.info("Powering off printer on pin {}.".format( self._printer_pin))
 		self._octopibox.pin_off(self._printer_pin)
 
-		#self._logger.info("Powering off spare outlet on pin {}.".format( self._spare_pin))
+		self_logger.debug("Powering off spare outlet on pin {}.".format( self._spare_pin))
 		self._octopibox.pin_off(self._spare_pin)
 
 	def _update_power_status(self):
 		printer_power_status = ["Off", "On"]
 		printer_power_status_text = printer_power_status[ self._octopibox.pin_value(self._printer_pin)]
 		self._plugin_manager.send_plugin_message(self._identifier, dict(type="updatePowerStatus", power_status_value=printer_power_status_text))
-		#self._logger.info("Data message sent from {} for power update to {}.".format(self._identifier, printer_power_status_text))
+		self_logger.debug("Data message sent from {} for power update to {}.".format(self._identifier, printer_power_status_text))
 
 	def _set_status_LED(self, status="DISCONNECTED"):
 		self._octopibox.clear_status_LED()

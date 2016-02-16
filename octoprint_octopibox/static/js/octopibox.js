@@ -45,16 +45,16 @@ $(function(){
         // Hack to remove automatically added Cancel button
         // See https://github.com/sciactive/pnotify/issues/141
         PNotify.prototype.options.confirm.buttons = [];
-        self.timeoutPopupText = gettext('Shutting down in ');
+        self.timeoutPopupText = gettext('Powering off in ');
         self.timeoutPopupOptions = {
-            title: gettext('Automatic Printer-off'),
+            title: gettext('Automatic Printer Power-off'),
             type: 'notice',
             icon: true,
             hide: false,
             confirm: {
                 confirm: true,
                 buttons: [{
-                    text: 'Abort Automatic Printer-off',
+                    text: 'Abort Automatic Power-off',
                     addClass: 'btn-block btn-danger',
                     promptTrigger: true,
                     click: function(notice, value){
