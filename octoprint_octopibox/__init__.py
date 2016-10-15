@@ -284,19 +284,24 @@ class OctoPiBoxPlugin(octoprint.plugin.TemplatePlugin,
 	def _powercallbackfunction(self, pin, level, tick):
 
 		if pin == self._printer_pin:
-			self_logger.debug("Printer pin {} level changed to {}".format(pin, level))
+			self._logger.debug("Printer pin {} level changed to {}".format(pin, level))
 			self._update_power_status()
 			if level == 0:
 				current_connection = self._printer.get_current_connection()
 				if current_connection[0] != "Closed":
-					self_logger.debug("Printer connection found: {}".format(current_connection[0:3]))
+					self._logger.debug("Printer connection found: {}".format(current_connection[0:3]))
 					self._printer.disconnect()
-					self_logger.debug("Printer disconnected after power-off.")
+					self._logger.debug("Printer disconnected after power-off.")
+				if self._timeout_value > 0:
+					self._timer.cancel()
+					self._timer = None
+					self._timeout_value = 0
+					self._plugin_manager.send_plugin_message(self._identifier, dict(type="close_popup"))
 			elif level == 1:
-				self_logger.debug("Printer power-on detected.")
+				self._logger.debug("Printer power-on detected.")
 				self._set_status_LED("CONNECTING")
 				self._printer.connect()
-				self_logger.debug("Printer auto-connect after power-on attempted.")
+				self._logger.debug("Printer auto-connect after power-on attempted.")
 
 	def _printeroff(self):
 		self._logger.debug("Printer disconnect before power-off.")
@@ -304,14 +309,14 @@ class OctoPiBoxPlugin(octoprint.plugin.TemplatePlugin,
 		self._logger.info("Powering off printer on pin {}.".format( self._printer_pin))
 		self._octopibox.pin_off(self._printer_pin)
 
-		self_logger.debug("Powering off spare outlet on pin {}.".format( self._spare_pin))
+		self._logger.debug("Powering off spare outlet on pin {}.".format( self._spare_pin))
 		self._octopibox.pin_off(self._spare_pin)
 
 	def _update_power_status(self):
 		printer_power_status = ["Off", "On"]
 		printer_power_status_text = printer_power_status[ self._octopibox.pin_value(self._printer_pin)]
 		self._plugin_manager.send_plugin_message(self._identifier, dict(type="updatePowerStatus", power_status_value=printer_power_status_text))
-		self_logger.debug("Data message sent from {} for power update to {}.".format(self._identifier, printer_power_status_text))
+		self._logger.debug("Data message sent from {} for power update to {}.".format(self._identifier, printer_power_status_text))
 
 	def _set_status_LED(self, status="DISCONNECTED"):
 		self._octopibox.clear_status_LED()

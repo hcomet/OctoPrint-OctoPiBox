@@ -89,6 +89,11 @@ $(function(){
                     self.timeoutPopup.remove();
                     self.timeoutPopup = undefined;
                 }
+            } else if (data.type == "close_popup") {
+                if (self.timeoutPopup !== undefined) {
+                    self.timeoutPopup.remove();
+                    self.timeoutPopup = undefined;
+                }            
             }
         }
 
